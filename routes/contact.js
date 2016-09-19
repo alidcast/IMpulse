@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
-var GoogleMapsAPI = require('googlemaps');
 var https = require('https');
+var GoogleMapsAPI = require('googlemaps');
+
 var tooSoonMessage = false;
 var tooSoonCall = false;
 

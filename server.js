@@ -5,9 +5,14 @@ var express = require('express'),
     bodyParser = require('body-parser');
     exphbs = require('express-handlebars'),
     logger = require('morgan'),
+    validator = require('express-validator'),
+    session = require('express-session'),
+    MongoStore = require('connect-mongo')(session),
+    mongoose = require('mongoose'),
+    passport = require('passport'),
 
-    routes = require('./routes/index'),
-    users = require('./routes/users'),
+    home = require('./routes/index'),
+    account = require('./routes/account'),
     contact = require('./routes/contact'),
 
     app     = express();
@@ -20,20 +25,33 @@ Object.assign=require('object-assign')
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(validator());
+
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: 's3cr3t',
+  store: new MongoStore({
+    url: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
+    autoReconnect: true
+  })
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
  * Views
-*  handlebars as templating engine
+*  Handlebars as templating engine
  */
 app.set('views', path.join(__dirname, 'views'));
 app.engine('.hbs', exphbs({defaultLayout: 'default', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
 
-// Routes (controllers)
-app.use('/', routes);
-app.use('/users', users);
-app.use('/contact', contact);
+// Primary Routes (controllers)
+app.use('/', home);
+app.use('/', account);
+app.use('/', contact);
 
 /**
  * Connect to MongoDB.
@@ -59,7 +77,6 @@ if (mongoURL == null && process.env.DATABASE_SERVICE_NAME) {
     // Provide UI label that excludes user id and pw
     mongoURLLabel += mongoHost + ':' + mongoPort + '/' + mongoDatabase;
     mongoURL += mongoHost + ':' +  mongoPort + '/' + mongoDatabase;
-
   }
 }
 var db = null,

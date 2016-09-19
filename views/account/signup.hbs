@@ -1,0 +1,12 @@
+<h3>{{title}}</h3>
+
+<form id="signup-form" method="POST">
+  <input type="hidden" name="_csrf"/>
+  <input type="email" name="email" id="email" placeholder="Email" autofocus="autofocus" required="required" class="form-control"/>
+  <input type="password" name="password" id="password" placeholder="Password" required="required" class="form-control"/>
+  <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" required="required" class="form-control"/>
+  <div class="form-buttons">
+    <button type="submit" class="btn btn-success">Signup</button>
+    <a href="/"><button type="button">Cancel</button></a>
+  </div>
+</form>
