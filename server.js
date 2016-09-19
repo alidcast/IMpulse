@@ -27,15 +27,15 @@ app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(validator());
 
-app.use(session({
-  resave: true,
-  saveUninitialized: true,
-  secret: 's3cr3t',
-  store: new MongoStore({
-    url: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
-    autoReconnect: true
-  })
-}));
+// app.use(session({
+//   resave: true,
+//   saveUninitialized: true,
+//   secret: 's3cr3t',
+//   store: new MongoStore({
+//     url: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
+//     autoReconnect: true
+//   })
+// }));
 app.use(passport.initialize());
 app.use(passport.session());
 
