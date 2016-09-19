@@ -4,15 +4,21 @@
   "description": "Node.js sample app for OpenShift 3",
   "main": "server.js",
   "dependencies": {
-    "chai": "^3.5.0",
-    "chai-http": "^2.0.1",
     "express": "^4.13.4",
-    "mocha": "^2.4.5",
     "mongodb": "^2.1.16",
+    "connect-mongo": "^1.3.2",
     "morgan": "^1.7.0",
+    "body-parser": "^1.15.2",
+    "mongoose": "^4.6.0",
     "object-assign": "4.1.0",
     "express-handlebars": "^3.0.0",
     "googlemaps": "^1.11.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-http": "^2.0.1",
+    "mocha": "^2.4.5",
+    "node-sass": "^3.9.3"
   },
   "engine": {
     "node": "*",
@@ -20,6 +26,8 @@
   },
   "scripts": {
     "start": "node server.js",
+    "watch:scss": "node-sass ./public/stylesheets/main.scss ./public/stylesheets/bundle.css -wo",
+    "serve": "npm run start & npm run watch:scss",
     "test": "IP=0.0.0.0 PORT=3030 mocha --timeout 5000 tests/*_test.js"
   },
   "repository": {

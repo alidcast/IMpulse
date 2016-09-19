@@ -2,28 +2,42 @@
 var express = require('express'),
     path = require('path');
     fs      = require('fs'),
-    app     = express(),
+    bodyParser = require('body-parser');
     exphbs = require('express-handlebars'),
-    morgan  = require('morgan'),
+    logger = require('morgan'),
+
     routes = require('./routes/index'),
-    users = require('./routes/users');
+    users = require('./routes/users'),
+    contact = require('./routes/contact'),
+
+    app     = express();
 
 Object.assign=require('object-assign')
 
-// view engine setup
+/**
+ * Express configuration.
+ */
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(logger('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
+
+/**
+ * Views
+*  handlebars as templating engine
+ */
 app.set('views', path.join(__dirname, 'views'));
-// set handlebars as template engine
 app.engine('.hbs', exphbs({defaultLayout: 'default', extname: '.hbs'}));
 app.set('view engine', '.hbs');
 
-app.use(morgan('combined'));
-app.use(express.static(path.join(__dirname, 'public')));
 
-
+// Routes (controllers)
 app.use('/', routes);
 app.use('/users', users);
+app.use('/contact', contact);
 
-
+/**
+ * Connect to MongoDB.
+ */
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
     mongoURL = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.MONGO_URL,
@@ -105,7 +119,9 @@ app.get('/pagecount', function (req, res) {
   }
 });
 
-// error handling
+/**
+ * Error Handler.
+ */
 app.use(function(err, req, res, next){
   console.error(err.stack);
   res.status(500).send('Something bad happened!');
@@ -115,6 +131,9 @@ initDb(function(err){
   console.log('Error connecting to Mongo. Message:\n'+err);
 });
 
+/**
+ * Start Express server.
+ */
 app.listen(port, ip);
 console.log('Server running on http://%s:%s', ip, port);
 
