@@ -2,13 +2,26 @@
 var express = require('express'),
     fs      = require('fs'),
     app     = express(),
-    eps     = require('ejs'),
-    morgan  = require('morgan');
-    
+    exphbs = require('express-handlebars'),
+    morgan  = require('morgan'),
+    routes = require('./routes/index'),
+    users = require('./routes/users');
+
 Object.assign=require('object-assign')
 
-app.engine('html', require('ejs').renderFile);
-app.use(morgan('combined'))
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+// set handlebars as template engine
+app.engine('.hbs', exphbs({defaultLayout: 'default', extname: '.hbs'}));
+app.set('view engine', '.hbs');
+
+app.use(morgan('combined'));
+app.use(express.static(path.join(__dirname, 'public')));
+
+
+app.use('/', routes);
+app.use('/users', users);
+
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0',
